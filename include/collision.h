@@ -87,37 +87,6 @@ public:
     }
 };
 
-
-
-template <typename lattice_model>
-class CollisionFactory
-{
-public:
-    static FluidColl_ptr<lattice_model> get_fluid_collision(const lbm::io::Config& cfg)
-    {
-        const std::string name = cfg.collision_model();
-        if (name == "bgk")
-            return std::make_shared<BGKCollision<lattice_model>>(cfg.tau());
-        else
-            throw std::logic_error("Fluid Collision operator \"" + name + "\" does not exist!");
-    }
-
-#if 0
-    NonFluidColl_ptr<lattice_model> get_solid_collision(const std::string& name)
-    {
-        if (name == "noslip")
-        else if (name == "freeslip")
-        else if (name == "outflow")
-        else if (name == "inflow")
-        else if (name == "pressure")
-        else if (name == "movingwall")
-        else
-            throw std::exception("Non-Fluid collision operator \""  + name + "\" does not exist!");
-    }
-#endif
-
-};
-
 } //namespace lbm
 
 #include "collision.hpp"

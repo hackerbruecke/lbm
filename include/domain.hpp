@@ -132,6 +132,9 @@ void Domain<lattice_model>::collide()
 {
     // Since the collision includes collision of non-fluid cells which must possibly take
     // neighbors into account the collision step is not parallelizable.
+
+    // TODO: This is not optimal as runtime checks must be made to determine the collision type.
+    // Find a better approach for this.
     for (auto z = 0u; z < zl + 2; ++z) {
         for (auto y = 0u; y < yl + 2; ++y) {
             for (auto x = 0u; x < xl + 2; ++x) {
