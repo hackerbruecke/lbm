@@ -48,7 +48,8 @@ void NoSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 
 template<typename lattice_model>
 MovingWallBoundary<lattice_model>::MovingWallBoundary(
-        const double_array<lattice_model::D>& wall_velocity, Domain<lattice_model>& domain) :
+    Domain<lattice_model>& domain, const double_array<lattice_model::D>& wall_velocity)
+    :
         NonFluidCollision<lattice_model>(domain), wall_velocity(wall_velocity)
 {
 }

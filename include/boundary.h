@@ -22,8 +22,9 @@ class MovingWallBoundary: public NonFluidCollision<lattice_model>
 {
     double_array<lattice_model::D> wall_velocity;
 public:
-    MovingWallBoundary(const double_array<lattice_model::D>& wall_velocity,
-            Domain<lattice_model>& domain);
+    MovingWallBoundary(Domain<lattice_model>& domain,
+            const double_array<lattice_model::D>& wall_velocity);
+
     void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
             override;
 

@@ -130,27 +130,23 @@ void Domain<lattice_model>::stream()
 template<typename lattice_model>
 void Domain<lattice_model>::collide()
 {
-    // Since the collision includes collision of non-fluid cells which must possibly take
-    // neighbors into account the collision step is not parallelizable.
-
-    // TODO: This is not optimal as runtime checks must be made to determine the collision type.
-    // Find a better approach for this.
+    // Collide fluid cells
+    #pragma omp parallel for collapse(3)
     for (auto z = 0u; z < zl + 2; ++z) {
         for (auto y = 0u; y < yl + 2; ++y) {
             for (auto x = 0u; x < xl + 2; ++x) {
-                if (typeid(*cell(x,y,z).get_collision_handler()) == typeid(*this->collision)) {
+                if (cell(x, y, z).is_fluid())
                     cell(x, y, z).collide({ x, y, z });
-                }
             }
         }
     }
-
+    // Collide all other cells
+    #pragma omp parallel for collapse(3)
     for (auto z = 0u; z < zl + 2; ++z) {
         for (auto y = 0u; y < yl + 2; ++y) {
             for (auto x = 0u; x < xl + 2; ++x) {
-                if (typeid(*cell(x,y,z).get_collision_handler()) != typeid(*this->collision)) {
+                if (!cell(x, y, z).is_fluid())
                     cell(x, y, z).collide({ x, y, z });
-                }
             }
         }
     }
