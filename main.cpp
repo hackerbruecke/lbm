@@ -88,7 +88,7 @@ int main(int argc, char** argv)
             std::cout.flush();
         }
         std::cout << "\nFinished!" << std::endl;
-        double mlups = domain->xlength()*domain->ylength()*domain->zlength()
+        double mlups = (2+domain->xlength())*(2+domain->ylength())*(2+domain->zlength())
                 *cfg.timesteps()/(duration*1e6);
         std::cout << "MLUPS: " << mlups << std::endl;
     }
