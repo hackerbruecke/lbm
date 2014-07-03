@@ -72,19 +72,25 @@ int main(int argc, char** argv)
                   << ", " << domain->zlength() << std::endl;
         std::cout << "Starting simulation..." << std::endl;
 
+        double duration = 0.0;
         // Run simulation
         for (auto t = 1u; t <= cfg.timesteps(); ++t) {
+            double start = omp_get_wtime();
             domain->stream();
             domain->swap();
             domain->collide();
+            duration += omp_get_wtime() - start;
+
             if (t % cfg.timesteps_per_plot() == 0)
                 lbm::io::write_vtk_file(*domain, cfg.output_dir(), cfg.output_filename(), t);
-
             // Print percents completed
             std::cout << "\r" << (int) ((double) t / cfg.timesteps() * 100) << " %";
             std::cout.flush();
         }
         std::cout << "\nFinished!" << std::endl;
+        double mlups = domain->xlength()*domain->ylength()*domain->zlength()
+                *cfg.timesteps()/(duration*1e6);
+        std::cout << "MLUPS: " << mlups << std::endl;
     }
     catch (const std::exception& ex) {
         std::cerr << "An error occured: " << ex.what() << std::endl;
