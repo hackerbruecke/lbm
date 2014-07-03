@@ -26,7 +26,7 @@
 #include "visual.h"
 
 void setBoundaryConditions(lbm::Domain<model>& domain, lbm::NoSlipBoundary<model>& no_slip,
-        lbm::InflowBoundary<model>& inflow, lbm::OutflowBoundary<model>& outflow)
+        lbm::MovingWallBoundary<model>& moving_wall)
 {
     auto xl = domain.xlength();
     auto yl = domain.ylength();
@@ -35,7 +35,7 @@ void setBoundaryConditions(lbm::Domain<model>& domain, lbm::NoSlipBoundary<model
     // Bottom XY plane
     domain.setBoundaryCondition(no_slip, 0, xl + 1, 0, yl + 1, 0, 0);
     // Top XY plane
-    domain.setBoundaryCondition(no_slip, 0, xl + 1, 0, yl + 1, zl + 1, zl + 1);
+    domain.setBoundaryCondition(moving_wall, 0, xl + 1, 0, yl + 1, zl + 1, zl + 1);
 
     // Front XZ plane
     domain.setBoundaryCondition(no_slip, 0, xl + 1, 0, 0, 0, zl);
@@ -43,9 +43,9 @@ void setBoundaryConditions(lbm::Domain<model>& domain, lbm::NoSlipBoundary<model
     domain.setBoundaryCondition(no_slip, 0, xl + 1, yl + 1, yl + 1, 0, zl);
 
     // Left YZ plane
-    domain.setBoundaryCondition(inflow, 0, 0, 0, yl + 1, 0, zl);
+    domain.setBoundaryCondition(no_slip, 0, 0, 0, yl + 1, 0, zl);
     // Right YZ plane
-    domain.setBoundaryCondition(outflow, xl + 1, xl + 1, 0, yl + 1, 0, zl);
+    domain.setBoundaryCondition(no_slip, xl + 1, xl + 1, 0, yl + 1, 0, zl);
 }
 
 
@@ -56,15 +56,17 @@ int main(int argc, char** argv)
         lbm::io::Config cfg(argc, argv);
         // Allocate collision operator
         auto collision = lbm::BGKCollision<model>(cfg.tau());
+        size_t xl, yl, zl;
+        xl = yl = zl = 40;
+        auto domain = make_unique<lbm::Domain<model>>(xl, yl, zl, collision);
         // Create domain from VTK point file
-        auto domain = lbm::io::read_vtk_point_file<model,
-                lbm::NoSlipBoundary<model>>(cfg.input_vtk(), collision);
+//        auto domain = lbm::io::read_vtk_point_file<model,
+//                lbm::NoSlipBoundary<model>>(cfg.input_vtk(), collision);
         // Create boundary conditions and apply them
-        lbm::double_array<model::D> inflowVelocity = { 0.003496, 0.0, 0.0 };
+        lbm::double_array<model::D> wallVelocity = { 0.02, 0.0, 0.0 };
         auto no_slip = lbm::NoSlipBoundary<model>(*domain);
-        auto outflow = lbm::OutflowBoundary<model>(*domain);
-        auto inflow =  lbm::InflowBoundary<model>(*domain, inflowVelocity);
-        setBoundaryConditions(*domain, no_slip, inflow, outflow);
+        auto moving_wall = lbm::MovingWallBoundary<model>(*domain, wallVelocity);
+        setBoundaryConditions(*domain, no_slip, moving_wall);
 
         // Print configuration file values and domain lengths
         std::cout << cfg << std::endl;
@@ -72,19 +74,25 @@ int main(int argc, char** argv)
                   << ", " << domain->zlength() << std::endl;
         std::cout << "Starting simulation..." << std::endl;
 
+        double duration = 0.0;
         // Run simulation
         for (auto t = 1u; t <= cfg.timesteps(); ++t) {
+            double start = omp_get_wtime();
             domain->stream();
             domain->swap();
             domain->collide();
+            duration += omp_get_wtime() - start;
+
             if (t % cfg.timesteps_per_plot() == 0)
                 lbm::io::write_vtk_file(*domain, cfg.output_dir(), cfg.output_filename(), t);
-
             // Print percents completed
             std::cout << "\r" << (int) ((double) t / cfg.timesteps() * 100) << " %";
             std::cout.flush();
         }
         std::cout << "\nFinished!" << std::endl;
+        double mlups = (2+domain->xlength())*(2+domain->ylength())*(2+domain->zlength())
+                *cfg.timesteps()/(duration*1e6);
+        std::cout << "MLUPS: " << mlups << std::endl;
     }
     catch (const std::exception& ex) {
         std::cerr << "An error occured: " << ex.what() << std::endl;
