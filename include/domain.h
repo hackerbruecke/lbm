@@ -9,10 +9,10 @@ namespace lbm
 template<typename lattice_model>
 class Domain
 {
-    FluidCollision<lattice_model>* collision;
+    const FluidCollision<lattice_model>* const collision;
     Lattice_field<lattice_model> collide_field;
     Lattice_field<lattice_model> stream_field;
-    size_t xl { 0 }, yl { 0 }, zl { 0 };
+    const size_t xl { 0 }, yl { 0 }, zl { 0 };
     // Origins
     double xo, yo, zo;
     // Spacings
@@ -20,36 +20,39 @@ class Domain
 
 public:
     Domain(size_t xl, size_t yl, size_t zl,
-            FluidCollision<lattice_model>& _collision, double xorigin = 0,
-            double yorigin = 0, double zorigin = 0, double xspacing = 1, double yspacing = 1,
-            double zspacing = 1);
+            FluidCollision<lattice_model>& _collision,
+            double xorigin = 0, double yorigin = 0, double zorigin = 0,
+            double xspacing = 1, double yspacing = 1, double zspacing = 1);
 
-    int idx(int x, int y, int z) const;
-    size_t xlength() const;
-    size_t ylength() const;
-    size_t zlength() const;
-    double xorigin() const;
-    double yorigin() const;
-    double zorigin() const;
-    double xspacing() const;
-    double yspacing() const;
-    double zspacing() const;
-    bool in_bounds(int x, int y, int z) const;
+    // Getters
+    auto xlength()  const -> decltype(xl);
+    auto ylength()  const -> decltype(yl);
+    auto zlength()  const -> decltype(zl);
+    auto xorigin()  const -> decltype(xo);
+    auto yorigin()  const -> decltype(yo);
+    auto zorigin()  const -> decltype(zo);
+    auto xspacing() const -> decltype(xs);
+    auto yspacing() const -> decltype(ys);
+    auto zspacing() const -> decltype(zs);
 
-    const Cell<lattice_model>& cell(int x, int y, int z) const;
-    Cell<lattice_model>& cell(int x, int y, int z);
+    // Helper functions
+    auto idx(int x, int y, int z) const         -> int;
+    auto in_bounds(int x, int y, int z) const   -> bool;
+    auto cell(int x, int y, int z) const        -> const Cell<lattice_model>&;
+    auto cell(int x, int y, int z)              -> Cell<lattice_model>&;
+    auto set_nonfluid_cells_nullcollide()       -> void;
+    auto setBoundaryCondition(NonFluidCollision<lattice_model>& condition,
+            size_t x0, size_t xE, size_t y0, size_t yE, size_t z0, size_t zE) -> void;
 
-    void set_nonfluid_cells_nullcollide();
-    void stream();
-    void collide();
-    void swap();
+    // Iteration functions
+    auto stream()   -> void;
+    auto collide()  -> void;
+    auto swap()     -> void;
 
-    void setBoundaryCondition(NonFluidCollision<lattice_model>& condition,
-            size_t x0, size_t xE, size_t y0, size_t yE, size_t z0, size_t zE);
-
-    Domain_ptr<lattice_model> create_subdomain(
-            parallel::ParallelBoundary<lattice_model>& parallel_boundary,
-            size_t xstart, size_t xend, int rank, int number_of_ranks) const;
+    // Parallelization tools
+    auto create_subdomain(parallel::ParallelBoundary<lattice_model>& parallel_boundary,
+            size_t xstart, size_t xend,
+            int rank, int number_of_ranks) const -> Domain_ptr<lattice_model>;
 };
 
 } //namespace lbm

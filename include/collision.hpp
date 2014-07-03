@@ -58,12 +58,12 @@ BGKCollision<lattice_model>::BGKCollision(double tau) :
 }
 
 template<typename lattice_model>
-inline void BGKCollision<lattice_model>::collide(Cell<lattice_model>& cell,
-        const uint_array<lattice_model::D>& position) const
+inline auto BGKCollision<lattice_model>::collide(Cell<lattice_model>& cell,
+        const uint_array<lattice_model::D>& position) const -> void
 {
-    auto density = this->compute_density(cell);
-    auto velocity = this->compute_velocity(cell, density);
-    auto feq = this->compute_feq(density, velocity);
+    const auto density = this->compute_density(cell);
+    const auto velocity = this->compute_velocity(cell, density);
+    const auto feq = this->compute_feq(density, velocity);
     for (auto q = 0u; q < lattice_model::Q; ++q) {
         cell[q] -= (cell[q] - feq[q]) / tau;
     }

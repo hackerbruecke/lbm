@@ -15,14 +15,14 @@ template<typename lattice_model>
 void NoSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
         const uint_array<lattice_model::D>& position) const
 {
-    auto x = position[0];
-    auto y = position[1];
-    auto z = position[2];
+    const auto x = position[0];
+    const auto y = position[1];
+    const auto z = position[2];
 
     for (auto q = 0u; q < lattice_model::Q; ++q) {
-        auto dx = lattice_model::velocities[q][0];
-        auto dy = lattice_model::velocities[q][1];
-        auto dz = lattice_model::velocities[q][2];
+        const auto& dx = lattice_model::velocities[q][0];
+        const auto& dy = lattice_model::velocities[q][1];
+        const auto& dz = lattice_model::velocities[q][2];
         if (this->domain.in_bounds(x + dx, y + dy, z + dz)
                 && this->domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
             cell[q] = this->domain.cell(x + dx, y + dy, z + dz)[lattice_model::inv(q)];
@@ -44,24 +44,24 @@ template<typename lattice_model>
 void MovingWallBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
         const uint_array<lattice_model::D>& position) const
 {
-    auto x = position[0];
-    auto y = position[1];
-    auto z = position[2];
+    const auto x = position[0];
+    const auto y = position[1];
+    const auto z = position[2];
 
     for (auto q = 0u; q < lattice_model::Q; ++q) {
-        auto dx = lattice_model::velocities[q][0];
-        auto dy = lattice_model::velocities[q][1];
-        auto dz = lattice_model::velocities[q][2];
+        const auto& dx = lattice_model::velocities[q][0];
+        const auto& dy = lattice_model::velocities[q][1];
+        const auto& dz = lattice_model::velocities[q][2];
         if (this->domain.in_bounds(x + dx, y + dy, z + dz)
                 && this->domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
             const auto& neighbor = this->domain.cell(x + dx, y + dy, z + dz);
 
-            double density = this->compute_density(neighbor);
+            const double density = this->compute_density(neighbor);
             double c_dot_u = 0;
             for (auto d = 0u; d < lattice_model::D; ++d) {
                 c_dot_u += lattice_model::velocities[q][d] * wall_velocity[d];
             }
-            double finv = neighbor[lattice_model::inv(q)];
+            const double finv = neighbor[lattice_model::inv(q)];
             cell[q] = finv + 2.0 * lattice_model::weights[q] * density * c_dot_u / (C_S * C_S);
         }
     }
@@ -80,14 +80,14 @@ template<typename lattice_model>
 void FreeSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
         const uint_array<lattice_model::D>& position) const
 {
-    auto x = position[0];
-    auto y = position[1];
-    auto z = position[2];
+    const auto x = position[0];
+    const auto y = position[1];
+    const auto z = position[2];
 
     for (auto q = 0u; q < lattice_model::Q; ++q) {
-        auto dx = lattice_model::velocities[q][0];
-        auto dy = lattice_model::velocities[q][1];
-        auto dz = lattice_model::velocities[q][2];
+        const auto& dx = lattice_model::velocities[q][0];
+        const auto& dy = lattice_model::velocities[q][1];
+        const auto& dz = lattice_model::velocities[q][2];
         if (this->domain.in_bounds(x + dx, y + dy, z + dz)
                 && this->domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
             if (this->domain.cell(x + dx, y, z).is_fluid())
@@ -125,15 +125,15 @@ void OutflowBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
     auto z = position[2];
 
     for (auto q = 0u; q < lattice_model::Q; ++q) {
-        auto dx = lattice_model::velocities[q][0];
-        auto dy = lattice_model::velocities[q][1];
-        auto dz = lattice_model::velocities[q][2];
+        const auto& dx = lattice_model::velocities[q][0];
+        const auto& dy = lattice_model::velocities[q][1];
+        const auto& dz = lattice_model::velocities[q][2];
         if (this->domain.in_bounds(x + dx, y + dy, z + dz)
                 && this->domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
 
             const auto& neighbor = this->domain.cell(x + dx, y + dy, z + dz);
-            auto velocity = neighbor.velocity(reference_density);
-            auto feq = neighbor.equilibrium(reference_density, velocity);
+            const auto velocity = neighbor.velocity(reference_density);
+            const auto feq = neighbor.equilibrium(reference_density, velocity);
 
             cell[q] = feq[q] + feq[lattice_model::inv(q)] - neighbor[lattice_model::inv(q)];
         }
@@ -156,14 +156,14 @@ template<typename lattice_model>
 void InflowBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
         const uint_array<lattice_model::D>& position) const
 {
-    auto x = position[0];
-    auto y = position[1];
-    auto z = position[2];
+    const auto x = position[0];
+    const auto y = position[1];
+    const auto z = position[2];
 
     for (auto q = 0u; q < lattice_model::Q; ++q) {
-        auto dx = lattice_model::velocities[q][0];
-        auto dy = lattice_model::velocities[q][1];
-        auto dz = lattice_model::velocities[q][2];
+        const auto& dx = lattice_model::velocities[q][0];
+        const auto& dy = lattice_model::velocities[q][1];
+        const auto& dz = lattice_model::velocities[q][2];
         if (this->domain.in_bounds(x + dx, y + dy, z + dz)
                 && this->domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
             cell[q] = this->compute_feq(reference_density, inflow_velocity)[q];
@@ -186,19 +186,19 @@ template<typename lattice_model>
 void PressureBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
         const uint_array<lattice_model::D>& position) const
 {
-    auto x = position[0];
-    auto y = position[1];
-    auto z = position[2];
+    const auto x = position[0];
+    const auto y = position[1];
+    const auto z = position[2];
 
     for (auto q = 0u; q < lattice_model::Q; ++q) {
-        auto dx = lattice_model::velocities[q][0];
-        auto dy = lattice_model::velocities[q][1];
-        auto dz = lattice_model::velocities[q][2];
+        const auto& dx = lattice_model::velocities[q][0];
+        const auto& dy = lattice_model::velocities[q][1];
+        const auto& dz = lattice_model::velocities[q][2];
         if (this->domain.in_bounds(x + dx, y + dy, z + dz)
                 && this->domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
-            auto neighbor = this->domain.cell(x + dx, y + dy, z + dz);
-            auto velocity = neighbor.velocity(input_density);
-            auto feq = neighbor.equilibrium(input_density, velocity);
+            const auto& neighbor = this->domain.cell(x + dx, y + dy, z + dz);
+            const auto velocity = neighbor.velocity(input_density);
+            const auto feq = neighbor.equilibrium(input_density, velocity);
             cell[q] = feq[q] + feq[lattice_model::inv(q)] - neighbor[lattice_model::inv(q)];
         }
     }

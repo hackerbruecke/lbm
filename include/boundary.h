@@ -12,9 +12,8 @@ class NoSlipBoundary: public NonFluidCollision<lattice_model>
 {
 public:
     NoSlipBoundary(Domain<lattice_model>& domain);
-
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-            override;
+    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
+            const override;
 };
 
 template<typename lattice_model>
@@ -24,9 +23,8 @@ class MovingWallBoundary: public NonFluidCollision<lattice_model>
 public:
     MovingWallBoundary(Domain<lattice_model>& domain,
             const double_array<lattice_model::D>& wall_velocity);
-
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-            override;
+    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
+            const override;
 
 };
 
@@ -35,8 +33,8 @@ class FreeSlipBoundary: public NonFluidCollision<lattice_model>
 {
 public:
     FreeSlipBoundary(Domain<lattice_model>& domain);
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-            override;
+    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
+            const override;
 };
 
 template<typename lattice_model>
@@ -45,8 +43,8 @@ class OutflowBoundary: public NonFluidCollision<lattice_model>
     double reference_density { 0.0 };
 public:
     OutflowBoundary(Domain<lattice_model>& domain, double reference_density = 1.0);
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-            override;
+    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
+            const override;
 };
 
 template<typename lattice_model>
@@ -57,8 +55,8 @@ class InflowBoundary: public NonFluidCollision<lattice_model>
 public:
     InflowBoundary(Domain<lattice_model>& domain,
             const double_array<lattice_model::D>& inflow_velocity, double reference_density = 1.0);
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-            override;
+    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
+            const override;
 };
 
 template<typename lattice_model>
@@ -67,8 +65,8 @@ class PressureBoundary: public NonFluidCollision<lattice_model>
     double input_density;
 public:
     PressureBoundary(Domain<lattice_model>& domain, double input_density);
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-            override;
+    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
+            const override;
 };
 } //namespace lbm
 

@@ -136,7 +136,7 @@ public:
     }
 };
 
-std::ostream& operator <<(std::ostream& lhs, const lbm::io::Config& cfg)
+auto operator <<(std::ostream& lhs, const lbm::io::Config& cfg) -> decltype(lhs)
 {
     lhs << "=== LBM configuration ===" << '\n'
         << "Input file:            " << cfg.input_file() << '\n'

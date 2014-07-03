@@ -4,55 +4,55 @@ namespace lbm
 {
 
 template<typename lattice_model>
-inline size_t Domain<lattice_model>::xlength() const
+inline auto Domain<lattice_model>::xlength() const -> decltype(xl)
 {
     return xl;
 }
 
 template<typename lattice_model>
-inline size_t Domain<lattice_model>::ylength() const
+inline auto Domain<lattice_model>::ylength() const -> decltype(yl)
 {
     return yl;
 }
 
 template<typename lattice_model>
-inline size_t Domain<lattice_model>::zlength() const
+inline auto Domain<lattice_model>::zlength() const -> decltype(zl)
 {
     return zl;
 }
 
 template<typename lattice_model>
-inline double Domain<lattice_model>::xorigin() const
+inline auto Domain<lattice_model>::xorigin() const -> decltype(xo)
 {
     return xo;
 }
 
 template<typename lattice_model>
-inline double Domain<lattice_model>::yorigin() const
+inline auto Domain<lattice_model>::yorigin() const -> decltype(yo)
 {
     return yo;
 }
 
 template<typename lattice_model>
-inline double Domain<lattice_model>::zorigin() const
+inline auto Domain<lattice_model>::zorigin() const -> decltype(zo)
 {
     return zo;
 }
 
 template<typename lattice_model>
-inline double Domain<lattice_model>::xspacing() const
+inline auto Domain<lattice_model>::xspacing() const -> decltype(xs)
 {
     return xs;
 }
 
 template<typename lattice_model>
-inline double Domain<lattice_model>::yspacing() const
+inline auto Domain<lattice_model>::yspacing() const -> decltype(ys)
 {
     return ys;
 }
 
 template<typename lattice_model>
-inline double Domain<lattice_model>::zspacing() const
+inline auto Domain<lattice_model>::zspacing() const -> decltype(zs)
 {
     return zs;
 }
@@ -69,6 +69,20 @@ inline bool Domain<lattice_model>::in_bounds(int x, int y, int z) const
     return x > 0 && x < (int) xl + 1 && y > 0 && y < (int) yl + 1 && z > 0 && z < (int) zl + 1;
 }
 
+
+template<typename lattice_model>
+inline auto Domain<lattice_model>::cell(int x, int y, int z) const -> const Cell<lattice_model>&
+{
+    return collide_field[idx(x, y, z)];
+}
+
+template<typename lattice_model>
+inline auto Domain<lattice_model>::cell(int x, int y, int z) -> Cell<lattice_model>&
+{
+    return collide_field[idx(x, y, z)];
+}
+
+
 template<typename lattice_model>
 inline Domain<lattice_model>::Domain(size_t xl, size_t yl, size_t zl,
         FluidCollision<lattice_model>& _collision, double xorigin, double yorigin,
@@ -84,7 +98,7 @@ inline Domain<lattice_model>::Domain(size_t xl, size_t yl, size_t zl,
 }
 
 template<typename lattice_model>
-void Domain<lattice_model>::set_nonfluid_cells_nullcollide()
+auto Domain<lattice_model>::set_nonfluid_cells_nullcollide() -> void
 {
     static auto null_collision = NullCollision<lattice_model>();
     #pragma omp parallel for collapse(3)
@@ -99,7 +113,7 @@ void Domain<lattice_model>::set_nonfluid_cells_nullcollide()
 }
 
 template<typename lattice_model>
-void Domain<lattice_model>::stream()
+auto Domain<lattice_model>::stream() -> void
 {
     // We don't stream over the ghost layer cells
     // Streaming can be parallelized since we only read in parallel but write sequentially
@@ -127,7 +141,7 @@ void Domain<lattice_model>::stream()
 }
 
 template<typename lattice_model>
-void Domain<lattice_model>::collide()
+auto Domain<lattice_model>::collide() -> void
 {
     // Collide fluid cells
     #pragma omp parallel for collapse(3)
@@ -152,15 +166,15 @@ void Domain<lattice_model>::collide()
 }
 
 template<typename lattice_model>
-inline void Domain<lattice_model>::swap()
+inline auto Domain<lattice_model>::swap() -> void
 {
     std::swap(collide_field, stream_field);
 }
 
 template<typename lattice_model>
-void Domain<lattice_model>::setBoundaryCondition(
+auto Domain<lattice_model>::setBoundaryCondition(
         NonFluidCollision<lattice_model>& condition, size_t x0, size_t xE,
-        size_t y0, size_t yE, size_t z0, size_t zE)
+        size_t y0, size_t yE, size_t z0, size_t zE) -> void
 {
     // TODO: Remove assertions(?)
     assert(xE >= x0);
@@ -182,21 +196,9 @@ void Domain<lattice_model>::setBoundaryCondition(
 }
 
 template<typename lattice_model>
-inline const Cell<lattice_model>& Domain<lattice_model>::cell(int x, int y, int z) const
-{
-    return collide_field[idx(x, y, z)];
-}
-
-template<typename lattice_model>
-inline Cell<lattice_model>& Domain<lattice_model>::cell(int x, int y, int z)
-{
-    return collide_field[idx(x, y, z)];
-}
-
-template<typename lattice_model>
-Domain_ptr<lattice_model> Domain<lattice_model>::create_subdomain(
+auto Domain<lattice_model>::create_subdomain(
         parallel::ParallelBoundary<lattice_model>& parallel_boundary,
-        size_t xstart, size_t xend, int rank, int number_of_ranks) const
+        size_t xstart, size_t xend, int rank, int number_of_ranks) const -> Domain_ptr<lattice_model>
 {
     assert(xend > xstart);
     const size_t new_xl = xend - xstart + 1;

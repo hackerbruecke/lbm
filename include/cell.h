@@ -12,60 +12,60 @@ template<typename lattice_model>
 class Cell
 {
     double_array<lattice_model::Q> pdf;
-    Collision<lattice_model>* collision;
+    const Collision<lattice_model>* collision;
 public:
-    explicit Cell(Collision<lattice_model>* collision);
+    explicit Cell(const Collision<lattice_model>* collision);
 
     /**
      * Indicates whether this cell is a fluid cell.
      */
-    bool is_fluid() const;
+    auto is_fluid() const -> bool;
 
     /**
      * Returns i-th distribution function of the current cell.
      */
-    double& operator[](size_t index);
+    auto operator[](size_t index) -> double&;
 
     /**
      * Returns i-th distribution function of the current cell (const version)
      */
-    const double& operator[](size_t index) const;
+    auto operator[](size_t index) const -> const double&;
 
     /**
      * Performs a collision step for the current cell.
      * @lattice_position (x,y,z) position of this cell.
      */
-    void collide(const uint_array<lattice_model::D>& lattice_position);
+    auto collide(const uint_array<lattice_model::D>& lattice_position) -> void;
 
     /**
      * Computes density of this cell.
      */
-    double density() const;
+    auto density() const -> double;
 
     /**
      * Computes velocity of this cell.
      */
-    double_array<lattice_model::D> velocity(double density) const;
+    auto velocity(double density) const -> double_array<lattice_model::D>;
 
     /**
      * Computes equilibrium function of this cell.
      */
-    double_array<lattice_model::Q> equilibrium(double density,
-            const double_array<lattice_model::D>& velocity) const;
+    auto equilibrium(double density, const double_array<lattice_model::D>& velocity) const
+        -> double_array<lattice_model::Q>;
 
     /**
      * Sets the collision handler for this cell.
      * This may be used to apply a boundary condition on this cell.
      */
-    void set_collision_handler(Collision<lattice_model>* collision);
+    auto set_collision_handler(const Collision<lattice_model>* collision) -> void;
 
     /**
      * Currently installed collision handler.
      */
     auto get_collision_handler() const -> decltype(collision);
 
-    bool has_fluid_vicinity(const Domain<lattice_model>& domain,
-            const uint_array<lattice_model::D>& position) const;
+    auto has_fluid_vicinity(const Domain<lattice_model>& domain,
+            const uint_array<lattice_model::D>& position) const -> bool;
 };
 
 } //namespace lbm

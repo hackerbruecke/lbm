@@ -8,7 +8,7 @@ namespace lbm
 namespace parallel
 {
 
-// TODO: Not yes implemented
+// TODO: Not yet implemented
 template<typename lattice_model>
 class ParallelBoundary : public NonFluidCollision<lattice_model>
 {
@@ -17,10 +17,9 @@ public:
         : NonFluidCollision<lattice_model>(domain)
     {}
 
-    void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position) const
-                override
-    {
-    }
+    void collide(Cell<lattice_model>& cell,
+            const uint_array<lattice_model::D>& position) const override
+    {}
 };
 
 }//namespace parallel

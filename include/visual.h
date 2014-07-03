@@ -35,8 +35,8 @@ void write_vtk_file(const Domain<lattice_model>& domain, const std::string& outp
         const std::string& output_filename, uint64_t t);
 
 template<typename lattice_model, typename solid_collision_model>
-Domain_ptr<lattice_model> read_vtk_point_file(const std::string& filename,
-        FluidCollision<lattice_model>& fluid_collision_model);
+auto read_vtk_point_file(const std::string& filename,
+        FluidCollision<lattice_model>& fluid_collision_model) -> Domain_ptr<lattice_model>;
 
 } //namespace io
 } //namespace lbm

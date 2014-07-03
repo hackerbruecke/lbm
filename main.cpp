@@ -60,10 +60,9 @@ int main(int argc, char** argv)
         auto domain = lbm::io::read_vtk_point_file<model,
                 lbm::NoSlipBoundary<model>>(cfg.input_vtk(), collision);
         // Create boundary conditions and apply them
-        lbm::double_array<model::D> inflowVelocity = { 0.003496, 0.0, 0.0 };
-        auto no_slip = lbm::NoSlipBoundary<model>(*domain);
+        auto no_slip = lbm::NoSlipBoundary<model> (*domain);
         auto outflow = lbm::OutflowBoundary<model>(*domain);
-        auto inflow =  lbm::InflowBoundary<model>(*domain, inflowVelocity);
+        auto inflow  = lbm::InflowBoundary<model> (*domain, { 0.003496, 0.0, 0.0 });
         setBoundaryConditions(*domain, no_slip, inflow, outflow);
 
         // Print configuration file values and domain lengths
