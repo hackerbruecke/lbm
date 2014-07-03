@@ -4,7 +4,7 @@ namespace lbm
 {
 
 template<typename lattice_model>
-double Collision<lattice_model>::compute_density(const Cell<lattice_model>& cell) const
+inline double Collision<lattice_model>::compute_density(const Cell<lattice_model>& cell) const
 {
     double density = 0;
     for (auto q = 0u; q < lattice_model::Q; ++q) {
@@ -14,7 +14,7 @@ double Collision<lattice_model>::compute_density(const Cell<lattice_model>& cell
 }
 
 template<typename lattice_model>
-double_array<lattice_model::D> Collision<lattice_model>::compute_velocity(
+inline double_array<lattice_model::D> Collision<lattice_model>::compute_velocity(
         const Cell<lattice_model>& cell, double density) const
 {
     double_array<lattice_model::D> velocity = { 0.0, 0.0, 0.0 };
@@ -23,8 +23,10 @@ double_array<lattice_model::D> Collision<lattice_model>::compute_velocity(
         for (auto q = 0u; q < lattice_model::Q; ++q) {
             velocity[d] += cell[q] * lattice_model::velocities[q][d];
         }
-        velocity[d] /= density;
     }
+    velocity[0] /= density;
+    velocity[1] /= density;
+    velocity[2] /= density;
     return velocity;
 }
 
@@ -56,7 +58,7 @@ BGKCollision<lattice_model>::BGKCollision(double tau) :
 }
 
 template<typename lattice_model>
-void BGKCollision<lattice_model>::collide(Cell<lattice_model>& cell,
+inline void BGKCollision<lattice_model>::collide(Cell<lattice_model>& cell,
         const uint_array<lattice_model::D>& position) const
 {
     auto density = this->compute_density(cell);

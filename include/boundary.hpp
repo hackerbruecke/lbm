@@ -3,20 +3,6 @@
 namespace lbm
 {
 
-///////////////////////////////////// NonFluidCollision /////////////////////////////////////////
-
-template<typename lattice_model>
-NonFluidCollision<lattice_model>::NonFluidCollision(Domain<lattice_model>& domain) :
-        domain ( domain )
-{
-}
-
-template<typename lattice_model>
-bool NonFluidCollision<lattice_model>::is_fluid() const
-{
-    return false;
-}
-
 ///////////////////////////////////// NoSlipBoundary /////////////////////////////////////////
 
 template<typename lattice_model>

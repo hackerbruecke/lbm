@@ -57,8 +57,12 @@ class NonFluidCollision: public Collision<lattice_model>
 protected:
     Domain<lattice_model>& domain;
 public:
-    NonFluidCollision(Domain<lattice_model>& domain);
-    bool is_fluid() const override final;
+    NonFluidCollision(Domain<lattice_model>& domain) : domain (domain) {}
+
+    bool is_fluid() const override final
+    {
+        return false;
+    }
 };
 
 ////////////////// BGKCollision //////////////////////////

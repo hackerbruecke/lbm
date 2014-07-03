@@ -72,8 +72,9 @@ int main(int argc, char** argv)
                   << ", " << domain->zlength() << std::endl;
         std::cout << "Starting simulation..." << std::endl;
 
-        double duration = 0.0;
+        domain->set_nonfluid_cells_nullcollide();
         // Run simulation
+        double duration = 0.0;
         for (auto t = 1u; t <= cfg.timesteps(); ++t) {
             double start = omp_get_wtime();
             domain->stream();

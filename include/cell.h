@@ -50,7 +50,8 @@ public:
     /**
      * Computes equilibrium function of this cell.
      */
-    double_array<lattice_model::Q> equilibrium(double density, const double_array<lattice_model::D>& velocity) const;
+    double_array<lattice_model::Q> equilibrium(double density,
+            const double_array<lattice_model::D>& velocity) const;
 
     /**
      * Sets the collision handler for this cell.
@@ -63,22 +64,8 @@ public:
      */
     auto get_collision_handler() const -> decltype(collision);
 
-    bool has_fluid_vicinity(const Domain<lattice_model>& domain, const uint_array<lattice_model::D>& position) const {
-        auto x = position[0];
-        auto y = position[1];
-        auto z = position[2];
-
-        for (auto q = 0u; q < lattice_model::Q; ++q) {
-            auto dx = lattice_model::velocities[q][0];
-            auto dy = lattice_model::velocities[q][1];
-            auto dz = lattice_model::velocities[q][2];
-            if (domain.in_bounds(x + dx, y + dy, z + dz)
-                    && domain.cell(x + dx, y + dy, z + dz).is_fluid()) {
-                return true;
-            }
-        }
-        return false;
-    }
+    bool has_fluid_vicinity(const Domain<lattice_model>& domain,
+            const uint_array<lattice_model::D>& position) const;
 };
 
 } //namespace lbm

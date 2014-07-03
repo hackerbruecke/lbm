@@ -4,73 +4,73 @@ namespace lbm
 {
 
 template<typename lattice_model>
-size_t Domain<lattice_model>::xlength() const
+inline size_t Domain<lattice_model>::xlength() const
 {
     return xl;
 }
 
 template<typename lattice_model>
-size_t Domain<lattice_model>::ylength() const
+inline size_t Domain<lattice_model>::ylength() const
 {
     return yl;
 }
 
 template<typename lattice_model>
-size_t Domain<lattice_model>::zlength() const
+inline size_t Domain<lattice_model>::zlength() const
 {
     return zl;
 }
 
 template<typename lattice_model>
-double Domain<lattice_model>::xorigin() const
+inline double Domain<lattice_model>::xorigin() const
 {
     return xo;
 }
 
 template<typename lattice_model>
-double Domain<lattice_model>::yorigin() const
+inline double Domain<lattice_model>::yorigin() const
 {
     return yo;
 }
 
 template<typename lattice_model>
-double Domain<lattice_model>::zorigin() const
+inline double Domain<lattice_model>::zorigin() const
 {
     return zo;
 }
 
 template<typename lattice_model>
-double Domain<lattice_model>::xspacing() const
+inline double Domain<lattice_model>::xspacing() const
 {
     return xs;
 }
 
 template<typename lattice_model>
-double Domain<lattice_model>::yspacing() const
+inline double Domain<lattice_model>::yspacing() const
 {
     return ys;
 }
 
 template<typename lattice_model>
-double Domain<lattice_model>::zspacing() const
+inline double Domain<lattice_model>::zspacing() const
 {
     return zs;
 }
 
 template<typename lattice_model>
-int Domain<lattice_model>::idx(int x, int y, int z) const
+inline int Domain<lattice_model>::idx(int x, int y, int z) const
 {
     return x + (xl + 2) * y + (xl + 2) * (yl + 2) * z;
 }
 
 template<typename lattice_model>
-bool Domain<lattice_model>::in_bounds(int x, int y, int z) const
+inline bool Domain<lattice_model>::in_bounds(int x, int y, int z) const
 {
     return x > 0 && x < (int) xl + 1 && y > 0 && y < (int) yl + 1 && z > 0 && z < (int) zl + 1;
 }
 
 template<typename lattice_model>
-Domain<lattice_model>::Domain(size_t xl, size_t yl, size_t zl,
+inline Domain<lattice_model>::Domain(size_t xl, size_t yl, size_t zl,
         FluidCollision<lattice_model>& _collision, double xorigin, double yorigin,
         double zorigin, double xspacing, double yspacing, double zspacing) :
         collision { &_collision }, collide_field((xl + 2) * (yl + 2) * (zl + 2),
@@ -86,14 +86,13 @@ Domain<lattice_model>::Domain(size_t xl, size_t yl, size_t zl,
 template<typename lattice_model>
 void Domain<lattice_model>::set_nonfluid_cells_nullcollide()
 {
-    // TODO: Check whether this gives a significant performance improvement
-    auto null_collision = std::make_shared<NullCollision<lattice_model>>();
+    static auto null_collision = NullCollision<lattice_model>();
     #pragma omp parallel for collapse(3)
     for (auto z = 1u; z < zl + 1; ++z) {
         for (auto y = 1u; y < yl + 1; ++y) {
             for (auto x = 1u; x < xl + 1; ++x) {
                 if (!cell(x, y, z).has_fluid_vicinity(*this, { x, y, z }))
-                    cell(x, y, z).set_collision_handler(*null_collision);
+                    cell(x, y, z).set_collision_handler(&null_collision);
             }
         }
     }
@@ -153,7 +152,7 @@ void Domain<lattice_model>::collide()
 }
 
 template<typename lattice_model>
-void Domain<lattice_model>::swap()
+inline void Domain<lattice_model>::swap()
 {
     std::swap(collide_field, stream_field);
 }
@@ -170,7 +169,7 @@ void Domain<lattice_model>::setBoundaryCondition(
     assert(xE < xl + 2);
     assert(yE < yl + 2);
     assert(zE < zl + 2);
-//    #pragma omp parallel for collapse(3)
+    #pragma omp parallel for collapse(3)
     for (auto z = z0; z <= zE; ++z) {
         for (auto y = y0; y <= yE; ++y) {
             for (auto x = x0; x <= xE; ++x) {
@@ -183,13 +182,13 @@ void Domain<lattice_model>::setBoundaryCondition(
 }
 
 template<typename lattice_model>
-const Cell<lattice_model>& Domain<lattice_model>::cell(int x, int y, int z) const
+inline const Cell<lattice_model>& Domain<lattice_model>::cell(int x, int y, int z) const
 {
     return collide_field[idx(x, y, z)];
 }
 
 template<typename lattice_model>
-Cell<lattice_model>& Domain<lattice_model>::cell(int x, int y, int z)
+inline Cell<lattice_model>& Domain<lattice_model>::cell(int x, int y, int z)
 {
     return collide_field[idx(x, y, z)];
 }
