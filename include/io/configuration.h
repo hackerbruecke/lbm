@@ -16,9 +16,9 @@ class Config
     std::string _lattice_model;
     std::string _collision_model;
     std::string _input_file;
-    std::string _input_vtk;
     std::string _output_dir { "output" };
     std::string _output_filename { "output" };
+    std::string _scenario_xml;
     uint64_t _timesteps { 0 };
     uint64_t _timesteps_per_plot { 0 };
     double _tau { 1.0 };
@@ -36,10 +36,6 @@ public:
     auto input_file() const -> decltype(_input_file)
     {
         return _input_file;
-    }
-    auto input_vtk() const -> decltype(_input_vtk)
-    {
-        return _input_vtk;
     }
     auto output_dir() const -> decltype(_output_dir)
     {
@@ -66,30 +62,38 @@ public:
         return _omp_threads;
     }
 
+    auto scenario_xml() const -> decltype(_scenario_xml)
+    {
+        return _scenario_xml;
+    }
+
     Config(int argc, char** argv)
     {
         // General options
         po::options_description general("General options");
-        general.add_options()("help,h", "Show help message")("input-file,i",
-                po::value<std::string>(&_input_file), "Input file containing configuration values");
+        general.add_options()
+                ("help,h", "Show help message")
+                ("input-file,i", po::value<std::string>(&_input_file),
+                        "Input file containing configuration values");
 
         // Configuration options
         po::options_description config("Configuration options");
-        config.add_options()("lattice-model,l",
-                po::value<std::string>(&_lattice_model)->default_value("d3q19"),
-                "Lattice model, one of d3q15, d3q19, dq327")("collision-model,c",
-                po::value<std::string>(&_collision_model)->default_value("bgk"),
-                "Collision operator model")("tau", po::value<double>(&_tau),
-                "Relaxation factor for BGK collision operator")("timesteps,t",
-                po::value<std::uint64_t>(&_timesteps), "Number of steps to perform")(
-                "timesteps-per-plotting", po::value<std::uint64_t>(&_timesteps_per_plot),
-                "Number of timesteps after which an output file is written")("input-vtk",
-                po::value<std::string>(&_input_vtk),
-                "Structured points VTK file containing fluid cell mask")("omp-threads",
-                po::value<uint32_t>(&_omp_threads), "Number of OpenMP threads to use")("output-dir",
-                po::value<std::string>(&_output_dir), "Output directory for plots")(
-                "output-filename", po::value<std::string>(&_output_filename),
-                "Base name of output file. Will be amended with timestep number and file type");
+        config.add_options()
+                ("lattice-model,l", po::value<std::string>(&_lattice_model)->default_value("d3q19"),
+                        "Lattice model, one of d3q15, d3q19, dq327")
+                ("collision-model,c", po::value<std::string>(&_collision_model)->default_value("bgk"),
+                        "Collision operator model")
+                ("tau", po::value<double>(&_tau), "Relaxation factor for BGK collision operator")
+                ("timesteps,t", po::value<std::uint64_t>(&_timesteps), "Number of steps to perform")
+                ("timesteps-per-plotting", po::value<std::uint64_t>(&_timesteps_per_plot),
+                        "Number of timesteps after which an output file is written")
+                ("scenario-file", po::value<std::string>(&_scenario_xml),
+                        "XML file containing scenario to simulate")
+                ("omp-threads", po::value<uint32_t>(&_omp_threads),
+                        "Number of OpenMP threads to use")
+                ("output-dir", po::value<std::string>(&_output_dir), "Output directory for plots")
+                ("output-filename", po::value<std::string>(&_output_filename),
+                    "Base name of output file. Will be amended with timestep number and file type");
 
         // Store command line options of general and config options
         po::options_description args;
@@ -147,7 +151,7 @@ auto operator <<(std::ostream& lhs, const lbm::io::Config& cfg) -> decltype(lhs)
         << "Tau:                   " << cfg.tau() << '\n'
         << "Timesteps:             " << cfg.timesteps() << '\n'
         << "Timesteps per plot:    " << cfg.timesteps_per_plot() << '\n'
-        << "Input VTK file:        " << cfg.input_vtk();
+        << "Scenario file:         " << cfg.scenario_xml();
     return lhs;
 }
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<scenario name="Cavity">
+<!--    <domain vtk-file=""> -->
+    <domain xl="10" yl="10" zl="10">
+        <boundary extent="z0" condition="noslip" />
+        <boundary extent="zmax"    condition="movingwall" vx="0.05" vy="0" vz="0" />
+        <boundary extent="x0"   condition="noslip" />
+        <boundary extent="xmax"  condition="noslip" />
+        <boundary extent="y0"  condition="noslip" />
+        <boundary extent="ymax"   condition="noslip" />
+    </domain>
+</scenario>

@@ -177,12 +177,10 @@ auto Domain<lattice_model>::setBoundaryCondition(
         size_t y0, size_t yE, size_t z0, size_t zE) -> void
 {
     // TODO: Remove assertions(?)
-    assert(xE >= x0);
-    assert(yE >= y0);
-    assert(zE >= z0);
-    assert(xE < xl + 2);
-    assert(yE < yl + 2);
-    assert(zE < zl + 2);
+    assert(xE >= x0 && yE >= y0 && zE >= z0);
+    assert(xE < xl + 2 && yE < yl + 2 && zE < zl + 2);
+    std::cout << "Setting boundary condition for extent "
+            << x0 << ' ' << xE << ' ' << y0 << ' ' << yE << ' ' << z0 << ' ' << zE << std::endl;
     #pragma omp parallel for collapse(3)
     for (auto z = z0; z <= zE; ++z) {
         for (auto y = y0; y <= yE; ++y) {

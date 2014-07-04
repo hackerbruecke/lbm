@@ -68,6 +68,28 @@ public:
     void collide(Cell<lattice_model>& cell, const uint_array<lattice_model::D>& position)
             const override;
 };
+
+template <typename lattice_model>
+class BoundaryKeeper
+{
+    static std::list<std::unique_ptr<NonFluidCollision<lattice_model>>> boundary_conditions;
+public:
+    template <typename collision, typename... Args>
+    static auto get_collision(Args&& ...args) -> NonFluidCollision<lattice_model>&;
+};
+
+template <typename lattice_model>
+std::list<std::unique_ptr<NonFluidCollision<lattice_model>>>
+    BoundaryKeeper<lattice_model>::boundary_conditions;
+
+template <typename lattice_model>
+template <typename collision, typename... Args>
+auto BoundaryKeeper<lattice_model>::get_collision(Args&& ...args) -> NonFluidCollision<lattice_model>&
+{
+    boundary_conditions.push_back(make_unique<collision>(args...));
+    return *boundary_conditions.back();
+}
+
 } //namespace lbm
 
 #include "boundary.hpp"

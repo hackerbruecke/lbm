@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+
+<scenario name="Pipe flow">
+   <domain vtk-file="scenarios/pipe.vtk">
+        <boundary extent="z0" condition="noslip" />
+        <boundary extent="zmax"    condition="noslip" />
+        <boundary extent="x0"   condition="inflow" vx="0.03" vy="0" vz="0" />
+        <boundary extent="xmax"  condition="outflow" />
+        <boundary extent="y0"  condition="noslip" />
+        <boundary extent="ymax"   condition="noslip" />
+    </domain>
+</scenario>

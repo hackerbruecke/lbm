@@ -1,6 +1,6 @@
 #pragma once
 
-#include "configuration.h"
+#include "io/configuration.h"
 #include "collision.h"
 
 namespace lbm

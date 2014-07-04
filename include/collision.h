@@ -5,7 +5,7 @@
 #include <exception>
 
 #include "lbmdefinitions.h"
-#include "configuration.h"
+#include "io/configuration.h"
 
 namespace lbm
 {

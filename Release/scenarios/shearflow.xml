@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+
+<scenario name="Cavity">
+    <domain xl="8" yl="8" zl="20">
+        <boundary extent="z0" condition="pressure" rho-in="1.005" />
+        <boundary extent="zmax"    condition="outflow" />
+        <boundary extent="x0"   condition="freeslip" />
+        <boundary extent="xmax"  condition="freeslip" />
+        <boundary extent="y0"  condition="noslip" />
+        <boundary extent="ymax"   condition="noslip" />
+    </domain>
+</scenario>
