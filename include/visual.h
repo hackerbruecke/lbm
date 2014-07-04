@@ -22,6 +22,8 @@
 #include <vtkStructuredGrid.h>
 #include <vtkPointData.h>
 #include <vtkStructuredPoints.h>
+#include <vtkXMLStructuredGridWriter.h>
+#include <vtkDoubleArray.h>
 
 #pragma GCC diagnostic pop
 
@@ -41,4 +43,7 @@ auto read_vtk_point_file(const std::string& filename,
 } //namespace io
 } //namespace lbm
 
-#include "visual.hpp"
+#if defined (LEGACY_WRITER)
+    #include "visual_legacy.hpp"
+#endif
+    #include "visual.hpp"
