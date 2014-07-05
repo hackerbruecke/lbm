@@ -2,7 +2,7 @@
 
 #include "pugixml/pugixml.hpp"
 #include "domain.h"
-#include "visual.h"
+#include "vtk.h"
 #include "boundary.h"
 #include "configuration.h"
 
@@ -129,10 +129,9 @@ void parse_boundary(const pugi::xml_node& boundary, Domain<lattice_model>& domai
 
 
 template <typename lattice_model>
-auto parse_scenario_file(const std::string& filename, const Config& cfg,
+auto parse_scenario_file(const std::string& filename, Config& cfg,
         FluidCollision<lattice_model>& collision) -> std::unique_ptr<Domain<lattice_model>>
 {
-//    const std::string filename = "/home/andre/workspace/pugiXML/Debug/cavity.xml";
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename.c_str());
     if (!result)
@@ -143,7 +142,11 @@ auto parse_scenario_file(const std::string& filename, const Config& cfg,
         throw std::logic_error("Scenario node missing!");
     if (!scenario.attribute("name"))
         throw std::logic_error("Scenario name is missing!");
-    std::cout << "Scenario: " << scenario.attribute("name").value() << std::endl;
+    const auto scenario_name = scenario.attribute("name").value();
+
+    std::cout << "Reading scenario: \"" << scenario_name << "\"..." << std::endl;
+
+    cfg.set_output_filename(scenario_name);
     auto xml_domain = scenario.child("domain");
     if (!xml_domain)
         throw std::logic_error("Domain node is missing!");
@@ -172,9 +175,9 @@ auto parse_scenario_file(const std::string& filename, const Config& cfg,
         throw std::logic_error(
                 "Neither vtk-file nor xl/yl/zl attribute provided to domain node!");
     }
-    std::cout << "X length: " << xl << std::endl;
-    std::cout << "Y length: " << yl << std::endl;
-    std::cout << "Z length: " << zl << std::endl;
+//    std::cout << "X length: " << xl << std::endl;
+//    std::cout << "Y length: " << yl << std::endl;
+//    std::cout << "Z length: " << zl << std::endl;
 
     // Iterate through boundary conditions
     for (auto xml_boundary = xml_domain.child("boundary"); xml_boundary;

@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<!--
+
+The following example shows how to set up a scenario file in xml.
+Currently the root not is <scenario /> which requires the scenario name.
+The name is used as the basis for output names of the vts files.
+
+The only child of <scenario /> is <domain />, which must either take a
+vtk-file containing vtk points in legacy format or the dimensions xl, yl, and zl.
+Note that if vtk-file and dimensions are provided the latter is overridden by the vtk contents.
+
+Within a domain, boundaries can be set. A boundary node has an extent attribute as well as
+an condition attribute defining the non-fluid collision operator to apply to the respective cells.
+
+For the extents, x0, xmax etc. can be used to assign a boundary condition to a whole boundary layer.
+
+Alternatively, the extent can be given in the format "xbegin xend ybegin yend zbegin zend",
+consisting of the ranges in each direction to which a boundary condition shall be applied.
+Note that currently it is not possible to use arithmetic expressions or x0/xmax expressions
+when this alternative format is used. One must also consider that xmax==xl+1 because of the
+ghost layers introduced in each domain.
+
+For the condition one may use the following boundary conditions:
+- noslip
+- freeslip
+- inflow        - Takes additional attributes vx, vy, vz defining the inflow velocities.
+                - May take optional attribute rho-ref defining the reference density (default: 1.0)
+- outflow       - May take optional attribute rho-ref defining the reference density (default: 1.0)
+- pressure      - Takes additional attribute rho-in defining the input density
+- movingwall    - Takes additional attributes vx, vy, vz defining the wall velocities
+-->
+
+<!-- NOTE: Don't use this file as input. It will not work properly since some boundaries are not set!!! -->
+<scenario name="Example-scenario">
+    <domain vtk-file="vtk-points-file.vtk">
+    <!-- Alternatively -->
+    <domain xl="40" yl="40" zl="40">
+        <boundary extent="z0" condition="noslip" />
+        <boundary extent="zmax"    condition="movingwall" vx="0.05" vy="0" vz="0" />
+        <boundary extent="ymax"   condition="noslip" />
+        <!-- The condition below expresses the same as the above condition with extent="ymax"
+         but in the alternative format. Note that a more elaborated use of this notation
+         allows for introducing more complex obstacles within the domain -->
+        <boundary extent="0 41 41 41 0 41"   condition="noslip" />
+    </domain>
+</scenario>

@@ -44,6 +44,6 @@ auto read_vtk_point_file(const std::string& filename,
 } //namespace lbm
 
 #if defined (LEGACY_WRITER)
-    #include "visual_legacy.hpp"
+    #include "vtk_legacy.hpp"
 #endif
-    #include "visual.hpp"
+    #include "vtk.hpp"
