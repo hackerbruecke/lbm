@@ -66,6 +66,10 @@ public:
 
     auto has_fluid_vicinity(const Domain<lattice_model>& domain,
             const uint_array<lattice_model::D>& position) const -> bool;
+
+    bool is_parallel_boundary() const {
+        return collision->get_type() == CollisionType::parallel;
+    }
 };
 
 } //namespace lbm

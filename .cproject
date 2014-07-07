@@ -23,10 +23,10 @@
 							<tool command="mpic++" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.854090424" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
 								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.1907436993" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.1793481065" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.other.other.2025248061" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -Wno-deprecated -fopenmp" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.2025248061" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -Wno-deprecated -fopenmp -Wno-literal-suffix" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.165981921" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/include/vtk-5.8"/>
-									<listOptionValue builtIn="false" value="/usr/include/mpich"/>
+									<listOptionValue builtIn="false" value="/usr/include/mpi"/>
 									<listOptionValue builtIn="false" value="../include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1065400281" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
@@ -47,6 +47,8 @@
 							<tool command="mpic++" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.423386325" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
 								<option id="gnu.cpp.link.option.libs.1414750596" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="vtkIO"/>
+									<listOptionValue builtIn="false" value="boost_serialization"/>
+									<listOptionValue builtIn="false" value="boost_mpi"/>
 									<listOptionValue builtIn="false" value="pugixml"/>
 									<listOptionValue builtIn="false" value="vtkFiltering"/>
 									<listOptionValue builtIn="false" value="vtkCommon"/>

@@ -13,17 +13,34 @@ namespace po = boost::program_options;
 
 class Config
 {
+    // TODO: Change to private and grant friend access to mpi functions
+public:
     std::string _collision_model;
     std::string _input_file;
     std::string _output_dir { "vtk" };
     std::string _output_filename { "output" };
     std::string _scenario_xml;
-    uint64_t _timesteps { 0 };
-    uint64_t _timesteps_per_plot { 0 };
-    double _tau { 1.0 };
+    uint32_t _timesteps { 0 };
+    uint32_t _timesteps_per_plot { 0 };
     uint32_t _omp_threads { 1 };
+    uint32_t _iproc { 1 };
+    uint32_t _jproc { 1 };
+    uint32_t _kproc { 1 };
+    double _tau { 1.0 };
 
 public:
+    auto iproc() const -> decltype(_iproc)
+    {
+    	return _iproc;
+    }
+    auto jproc() const -> decltype(_jproc)
+	{
+		return _jproc;
+	}
+    auto kproc() const -> decltype(_kproc)
+	{
+		return _kproc;
+	}
     auto collision_model() const -> decltype(_collision_model)
     {
         return _collision_model;
@@ -65,6 +82,7 @@ public:
         return _scenario_xml;
     }
 
+    Config() {}
     Config(int argc, char** argv)
     {
         // General options
@@ -81,9 +99,9 @@ public:
                 "Collision operator model")
         ("tau", po::value<double>(&_tau)->required(),
                 "Relaxation factor for BGK collision operator. Must be in (0.5, 2.0)")
-        ("timesteps,t", po::value<std::uint64_t>(&_timesteps)->required(),
+        ("timesteps,t", po::value<std::uint32_t>(&_timesteps)->required(),
                 "Number of steps to perform")
-        ("timesteps-per-plot", po::value<std::uint64_t>(&_timesteps_per_plot)->required(),
+        ("timesteps-per-plot", po::value<std::uint32_t>(&_timesteps_per_plot)->required(),
                 "Number of timesteps after which an output file is written")
         ("scenario-file", po::value<std::string>(&_scenario_xml)->required(),
                 "XML file containing scenario to simulate")
@@ -91,6 +109,12 @@ public:
                 "Number of OpenMP threads to use")
         ("output-dir", po::value<std::string>(&_output_dir),
                 "Output directory for plots")
+        ("iproc", po::value<uint32_t>(&_iproc),
+                "Number of processes in x-direction (MPI)")
+        ("jproc", po::value<uint32_t>(&_jproc),
+                "Number of processes in y-direction (MPI)")
+        ("kproc", po::value<uint32_t>(&_kproc),
+                "Number of processes in z-direction (MPI)")
         ;// End of options
         // Store command line options of general and config options
         po::options_description args;
@@ -143,6 +167,8 @@ public:
             }
         }
     }
+
+//    friend void lbm::mpi::broadcast(lbm::io::Config& cfg, std::array<size_t, 3>& domain_length, MPI_Comm comm);
 };
 
 auto operator <<(std::ostream& lhs, const lbm::io::Config& cfg) -> decltype(lhs)
@@ -151,12 +177,17 @@ auto operator <<(std::ostream& lhs, const lbm::io::Config& cfg) -> decltype(lhs)
         << "> Configuration file:     " << cfg.input_file() << '\n'
         << "> Output directory:       " << cfg.output_dir() << '\n'
         << "> Output filename:        " << cfg.output_filename() << '\n'
-        << "> Number of OMP threads:  " << omp_get_max_threads() << '\n'
         << "> Collision model:        " << cfg.collision_model() << '\n'
         << "> Tau:                    " << cfg.tau() << '\n'
         << "> Timesteps:              " << cfg.timesteps() << '\n'
         << "> Timesteps per plot:     " << cfg.timesteps_per_plot() << '\n'
-        << "> Scenario file:          " << cfg.scenario_xml();
+        << "> Scenario file:          " << cfg.scenario_xml() << '\n'
+        << "> === Parallel settings ===\n"
+        << "> Number of OMP threads:  " << omp_get_max_threads() << '\n'
+        << "> iproc:                  " << cfg.iproc() << '\n'
+        << "> jproc:                  " << cfg.jproc() << '\n'
+        << "> kproc:                  " << cfg.kproc() << '\n'
+        ;
     return lhs;
 }
 

@@ -7,7 +7,7 @@ namespace lbm
 
 template<typename lattice_model>
 NoSlipBoundary<lattice_model>::NoSlipBoundary(Domain<lattice_model>& domain) :
-        NonFluidCollision<lattice_model>(domain)
+        NonFluidCollision<lattice_model>(CollisionType::noslip, domain)
 {
 }
 
@@ -36,7 +36,8 @@ template<typename lattice_model>
 MovingWallBoundary<lattice_model>::MovingWallBoundary(
     Domain<lattice_model>& domain, const double_array<lattice_model::D>& wall_velocity)
     :
-        NonFluidCollision<lattice_model>(domain), wall_velocity(wall_velocity)
+        NonFluidCollision<lattice_model>(CollisionType::movingwall, domain),
+        wall_velocity(wall_velocity)
 {
 }
 
@@ -71,7 +72,7 @@ void MovingWallBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 
 template<typename lattice_model>
 FreeSlipBoundary<lattice_model>::FreeSlipBoundary(Domain<lattice_model>& domain) :
-        NonFluidCollision<lattice_model>(domain)
+        NonFluidCollision<lattice_model>(CollisionType::freeslip, domain)
 {
 
 }
@@ -110,7 +111,7 @@ void FreeSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 template<typename lattice_model>
 OutflowBoundary<lattice_model>::OutflowBoundary(Domain<lattice_model>& domain,
         double reference_density) :
-        NonFluidCollision<lattice_model>(domain),
+        NonFluidCollision<lattice_model>(CollisionType::outflow, domain),
         reference_density { reference_density }
 {
 
@@ -145,7 +146,7 @@ void OutflowBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 template<typename lattice_model>
 InflowBoundary<lattice_model>::InflowBoundary(Domain<lattice_model>& domain,
         const double_array<lattice_model::D>& inflow_velocity, double reference_density) :
-        NonFluidCollision<lattice_model>(domain),
+        NonFluidCollision<lattice_model>(CollisionType::inflow, domain),
         reference_density { reference_density },
         inflow_velocity(inflow_velocity)
 {
@@ -176,7 +177,7 @@ void InflowBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 template<typename lattice_model>
 PressureBoundary<lattice_model>::PressureBoundary(Domain<lattice_model>& domain,
         double input_density) :
-        NonFluidCollision<lattice_model>(domain),
+        NonFluidCollision<lattice_model>(CollisionType::pressure, domain),
         input_density { input_density }
 {
 

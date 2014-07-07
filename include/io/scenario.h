@@ -46,6 +46,7 @@ auto parse_condition(const pugi::xml_node& boundary, Domain<lattice_model>& doma
                 boundary.attribute("vy").as_double(),
                 boundary.attribute("vz").as_double()
         };
+        std::cout << "mv";
         return BF::template get_collision<MovingWallBoundary<lattice_model>>(domain, wall_velocity);
     }
     else if (condition == "freeslip") {

@@ -53,7 +53,7 @@ double_array<lattice_model::Q> Collision<lattice_model>::compute_feq(double dens
 ///////////////////////////////////// BGKCollision /////////////////////////////////////////
 template<typename lattice_model>
 BGKCollision<lattice_model>::BGKCollision(double tau) :
-        tau { tau }
+        FluidCollision<lattice_model>(CollisionType::bgk), tau { tau }
 {
 }
 

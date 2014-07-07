@@ -14,7 +14,7 @@ class ParallelBoundary : public NonFluidCollision<lattice_model>
 {
 public:
     ParallelBoundary(Domain<lattice_model>& domain)
-        : NonFluidCollision<lattice_model>(domain)
+        : NonFluidCollision<lattice_model>(CollisionType::parallel, domain)
     {}
 
     void collide(Cell<lattice_model>& cell,
