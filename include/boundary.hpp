@@ -93,9 +93,9 @@ void FreeSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
             if (this->domain.cell(x + dx, y, z).is_fluid())
                 cell[q] =
                         this->domain.cell(x + dx, y, z)[lattice_model::velocity_index(-dx, dy, dz)];
-            else if (this->domain.cell(x, y + dx, z).is_fluid())
+            else if (this->domain.cell(x, y + dy, z).is_fluid())
                 cell[q] =
-                        this->domain.cell(x, y + dx, z)[lattice_model::velocity_index(dx, -dy, dz)];
+                        this->domain.cell(x, y + dy, z)[lattice_model::velocity_index(dx, -dy, dz)];
             else if (this->domain.cell(x, y, z + dz).is_fluid())
                 cell[q] =
                         this->domain.cell(x, y, z + dz)[lattice_model::velocity_index(dx, dy, -dz)];
