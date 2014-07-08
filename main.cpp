@@ -94,16 +94,25 @@ int main(int argc, char** argv)
                     int index = 0;
                     size_t bufsize = (send_subl[0]+2)*(send_subl[1]+2)*(send_subl[2]+2);
                     int* buffer = new int[bufsize];
-
+                    int xrmd = 0, yrmd = 0, zrmd = 0;
+                    if (i >= length[0] % dimensions[0]) {
+                    	xrmd = length[0] % dimensions[0];
+                    }
+                    if (j >= length[1] % dimensions[1]) {
+                    	yrmd = length[1] % dimensions[1];
+                    }
+                    if (k >= length[2] % dimensions[2]) {
+                    	zrmd = length[2] % dimensions[2];
+                    }
                     for (auto z = 0u; z < send_subl[2] + 2; ++z) {
                         for (auto y = 0u; y < send_subl[1] + 2; ++y) {
                             for (auto x = 0u; x < send_subl[0] + 2; ++x) {
 //                                buffer.push_back(domain->cell(x, y, z).get_type());
                                 buffer[index++] = static_cast<int>(
                                         *domain->cell(
-                                                x+i*(send_subl[0]),
-                                                y+j*(send_subl[1]),
-                                                z+k*(send_subl[2]))
+                                                x+i*(send_subl[0])+xrmd,
+                                                y+j*(send_subl[1])+yrmd,
+                                                z+k*(send_subl[2])+zrmd)
                                         .get_collision_handler());
                             }
                         }
@@ -139,7 +148,11 @@ int main(int argc, char** argv)
 //        std::cout << rank << "Received " << bufsize <<
 //                ", creating with (" << subl[0] << ' ' << subl[1] << ' ' << subl[2] <<  ")" << std::endl;
         for (auto i=0u; i<origin.size(); ++i) {
-            origin[i] += cart_rank[i]*subl[i]*spacing[i];
+        	int rmd = 0;
+            if (cart_rank[i] >= length[i] % dimensions[i]) {
+            	rmd = length[i] % dimensions[i];
+            }
+            origin[i] += (cart_rank[i]*subl[i]+rmd)*spacing[i];
         }
         subdomain = lbm::mpi::create_subdomain_from_buffer(subl, origin, spacing, buffer, bufsize, *collision);
 //        std::cout << rank << " created subdomain with lengths: "
