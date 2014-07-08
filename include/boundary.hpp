@@ -33,11 +33,10 @@ void NoSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 ///////////////////////////////////// MovingWallBoundary /////////////////////////////////////////
 
 template<typename lattice_model>
-MovingWallBoundary<lattice_model>::MovingWallBoundary(
-    Domain<lattice_model>& domain, const double_array<lattice_model::D>& wall_velocity)
-    :
-        NonFluidCollision<lattice_model>(CollisionType::movingwall, domain),
-        wall_velocity(wall_velocity)
+MovingWallBoundary<lattice_model>::MovingWallBoundary(Domain<lattice_model>& domain,
+        const double_array<lattice_model::D>& wall_velocity) :
+        NonFluidCollision<lattice_model>(CollisionType::movingwall, domain), wall_velocity(
+                wall_velocity)
 {
 }
 
@@ -94,14 +93,23 @@ void FreeSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
             if (this->domain.cell(x + dx, y, z).is_fluid())
                 cell[q] =
                         this->domain.cell(x + dx, y, z)[lattice_model::velocity_index(-dx, dy, dz)];
-            else if (this->domain.cell(x, y + dx, z).is_fluid())
+            else if (this->domain.cell(x, y + dy, z).is_fluid())
                 cell[q] =
-                        this->domain.cell(x, y + dx, z)[lattice_model::velocity_index(dx, -dy, dz)];
+                        this->domain.cell(x, y + dy, z)[lattice_model::velocity_index(dx, -dy, dz)];
             else if (this->domain.cell(x, y, z + dz).is_fluid())
                 cell[q] =
                         this->domain.cell(x, y, z + dz)[lattice_model::velocity_index(dx, dy, -dz)];
-            else // TODO: Check if this condition is correct!
-                cell[q] = this->domain.cell(x + dx, y + dy, z + dz)[lattice_model::inv(q)];
+            else if (this->domain.cell(x, y + dy, z + dz).is_fluid())
+                cell[q] = this->domain.cell(x, y + dy, z + dz)[lattice_model::velocity_index(dx,
+                        -dy, -dz)];
+            else if (this->domain.cell(x + dx, y, z + dz).is_fluid())
+                cell[q] = this->domain.cell(x + dx, y, z + dz)[lattice_model::velocity_index(-dx,
+                        dy, -dz)];
+            else if (this->domain.cell(x + dx, y + dy, z).is_fluid())
+                cell[q] = this->domain.cell(x + dx, y + dy, z)[lattice_model::velocity_index(-dx,
+                        -dy, dz)];
+//                    else // Check if this condition is correct!
+//                        cell[q] = this->domain.cell(x + dx, y + dy, z + dz)[lattice_model::inv(q)];
         }
     }
 }
@@ -111,8 +119,8 @@ void FreeSlipBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 template<typename lattice_model>
 OutflowBoundary<lattice_model>::OutflowBoundary(Domain<lattice_model>& domain,
         double reference_density) :
-        NonFluidCollision<lattice_model>(CollisionType::outflow, domain),
-        reference_density { reference_density }
+        NonFluidCollision<lattice_model>(CollisionType::outflow, domain), reference_density {
+                reference_density }
 {
 
 }
@@ -146,9 +154,8 @@ void OutflowBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 template<typename lattice_model>
 InflowBoundary<lattice_model>::InflowBoundary(Domain<lattice_model>& domain,
         const double_array<lattice_model::D>& inflow_velocity, double reference_density) :
-        NonFluidCollision<lattice_model>(CollisionType::inflow, domain),
-        reference_density { reference_density },
-        inflow_velocity(inflow_velocity)
+        NonFluidCollision<lattice_model>(CollisionType::inflow, domain), reference_density {
+                reference_density }, inflow_velocity(inflow_velocity)
 {
 
 }
@@ -177,8 +184,8 @@ void InflowBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
 template<typename lattice_model>
 PressureBoundary<lattice_model>::PressureBoundary(Domain<lattice_model>& domain,
         double input_density) :
-        NonFluidCollision<lattice_model>(CollisionType::pressure, domain),
-        input_density { input_density }
+        NonFluidCollision<lattice_model>(CollisionType::pressure, domain), input_density {
+                input_density }
 {
 
 }
@@ -204,4 +211,4 @@ void PressureBoundary<lattice_model>::collide(Cell<lattice_model>& cell,
         }
     }
 }
-}//namespace lbm
+} //namespace lbm
