@@ -54,7 +54,7 @@ int main(int argc, char** argv)
             // Read configuration file
             cfg = lbm::io::Config(argc, argv);
 
-            if (cfg.iproc()*cfg.jproc()*cfg.kproc() != number_of_ranks)
+            if (cfg.iproc()*cfg.jproc()*cfg.kproc() != (uint32_t)number_of_ranks)
                 throw std::logic_error("iproc*jproc*kproc != number of ranks!");
             // Allocate collision operator
             collision = new lbm::BGKCollision<model>(cfg.tau());

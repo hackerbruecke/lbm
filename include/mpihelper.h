@@ -81,15 +81,16 @@ inline auto compute_sublengths(
 }
 
 template <typename lattice_model>
-auto get_collision_from_type(Domain<lattice_model>& domain, size_t type) -> Collision<lattice_model>&
+auto get_collision_from_type(Domain<lattice_model>& domain, const io::Config& cfg,
+        size_t type) -> Collision<lattice_model>&
 {
     // TODO: Fix those constant values!!!
-    static BGKCollision<lattice_model> bgk(0.6);//tau
+    static BGKCollision<lattice_model> bgk(cfg.tau());//tau
     static NoSlipBoundary<lattice_model> noslip(domain);
     static MovingWallBoundary<lattice_model> movingwall(domain, {0.05, 0, 0});//Wall velocity
     static FreeSlipBoundary<lattice_model> freeslip(domain);
     static OutflowBoundary<lattice_model> outflow(domain);
-    static InflowBoundary<lattice_model> inflow(domain, {0.0, 0.0, 0.05});//inflow velocity
+    static InflowBoundary<lattice_model> inflow(domain, {0.003496177, 0.0, 0.0});//inflow velocity
     static PressureBoundary<lattice_model> pressure(domain, 1.005);//input density
     static ParallelBoundary<lattice_model> parallel(domain);
 
@@ -129,7 +130,8 @@ auto create_subdomain_from_buffer(
 		const double_array<3>& spacing,
 		const int* const buffer,
 		size_t bufsize,
-		FluidCollision<lattice_model>& collision) -> Domain_ptr<lattice_model>
+		FluidCollision<lattice_model>& collision,
+		const io::Config& cfg) -> Domain_ptr<lattice_model>
 {
 	auto domain = make_unique<Domain<lattice_model>>(
 	        subl[0], subl[1], subl[2], collision,
@@ -139,7 +141,7 @@ auto create_subdomain_from_buffer(
 	assert(domain->collide_field.size() == bufsize);
 	// Copy whole buffer into the domain's collide field
 	for (auto i = 0u; i < bufsize; ++i) {
-	    auto& collision = get_collision_from_type<lattice_model>(*domain,
+	    auto& collision = get_collision_from_type<lattice_model>(*domain, cfg,
 	            static_cast<size_t>(buffer[i]));
 		domain->collide_field[i].set_collision_handler(&collision);
 	}
@@ -288,7 +290,7 @@ Domain_ptr<lattice_model> create_subdomain(int rank, const int3D& dimensions,
                         MPI_Send(buffer, bufsize, MPI_INT, dest, 0, comm);
                     else    // or directly create the domain for the rank 0 process
                         subdomain = lbm::mpi::create_subdomain_from_buffer(
-                                send_subl, origin, spacing, buffer, bufsize, *collision);
+                                send_subl, origin, spacing, buffer, bufsize, *collision, cfg);
                     delete [] buffer;
                 }
             }
@@ -312,7 +314,7 @@ Domain_ptr<lattice_model> create_subdomain(int rank, const int3D& dimensions,
         }
         // Create subdomain from the data received.
         subdomain = lbm::mpi::create_subdomain_from_buffer(subl, origin, spacing,
-                buffer, bufsize,*collision);
+                buffer, bufsize,*collision, cfg);
         delete [] buffer;
     }
     return std::move(subdomain);

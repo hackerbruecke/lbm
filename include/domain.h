@@ -62,7 +62,8 @@ public:
             const double_array<3>& spacing,
     		const int* const buffer,
     		size_t bufsize,
-    		FluidCollision<lm>& collision) -> Domain_ptr<lm>;
+    		FluidCollision<lm>& collision,
+    		const io::Config& cfg) -> Domain_ptr<lm>;
 
     void replace_fluid_by_parallel_boundary()
     {
