@@ -195,7 +195,7 @@ auto Domain<lattice_model>::setBoundaryCondition(
 
 template<typename lattice_model>
 auto Domain<lattice_model>::create_subdomain(
-        parallel::ParallelBoundary<lattice_model>& parallel_boundary,
+        mpi::ParallelBoundary<lattice_model>& parallel_boundary,
         size_t xstart, size_t xend, int rank, int number_of_ranks) const -> Domain_ptr<lattice_model>
 {
     assert(xend > xstart);

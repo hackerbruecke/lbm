@@ -42,6 +42,8 @@ template <typename lattice_model> class NonFluidCollision;
 template <typename lattice_model>
     using NonFluidColl_ptr = std::shared_ptr<NonFluidCollision<lattice_model>>;
 
+using int3D = std::array<int, 3>;
+
 // Constant for 3D lattice speed of sound
 static constexpr double C_S = 0.57735026919l;
 }//namespace lbm

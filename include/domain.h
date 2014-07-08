@@ -51,13 +51,13 @@ public:
     auto swap()     -> void;
 
     // Parallelization tools
-    auto create_subdomain(parallel::ParallelBoundary<lattice_model>& parallel_boundary,
+    auto create_subdomain(mpi::ParallelBoundary<lattice_model>& parallel_boundary,
             size_t xstart, size_t xend,
             int rank, int number_of_ranks) const -> Domain_ptr<lattice_model>;
 
     template <typename lm>
     friend auto lbm::mpi::create_subdomain_from_buffer(
-    		const uint_array<3>& subl,
+    		const int3D& subl,
             const double_array<3>& origin,
             const double_array<3>& spacing,
     		const int* const buffer,
@@ -66,7 +66,7 @@ public:
 
     void replace_fluid_by_parallel_boundary()
     {
-        static parallel::ParallelBoundary<lattice_model> pb(*this);
+        static mpi::ParallelBoundary<lattice_model> pb(*this);
         for (auto y = 0u; y < yl+2; ++y) {
             for (auto x = 0u; x < xl+2; ++x) {
                 if (cell(x, y, 0).is_fluid())
