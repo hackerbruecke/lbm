@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <exception>
 
 #include "lbmdefinitions.h"
@@ -10,6 +11,19 @@
 namespace lbm
 {
 
+enum class CollisionType : size_t
+{
+    bgk,
+    null,
+    noslip,
+    movingwall,
+    freeslip,
+    outflow,
+    inflow,
+    pressure,
+    parallel
+};
+
 template<typename lattice_model> class Cell;
 /**
  * Base class for all collision types.
@@ -17,6 +31,7 @@ template<typename lattice_model> class Cell;
 template<typename lattice_model>
 class Collision
 {
+    const CollisionType type;
 public:
     auto compute_density(const Cell<lattice_model>& cell) const -> double;
     auto compute_velocity(const Cell<lattice_model>& cell, double density) const
@@ -27,6 +42,17 @@ public:
     virtual bool is_fluid() const = 0;
     virtual void collide(Cell<lattice_model>& cell,
             const uint_array<lattice_model::D>& position) const = 0;
+
+    const CollisionType& get_type() const
+    {
+        return type;
+    }
+    operator size_t() const
+    {
+        return static_cast<std::underlying_type<CollisionType>::type>(type);
+    }
+
+    Collision(const CollisionType& name) : type {name} {}
     virtual ~Collision() {}
 };
 
@@ -34,6 +60,7 @@ template<typename lattice_model>
 class FluidCollision: public Collision<lattice_model>
 {
 public:
+    FluidCollision(const CollisionType& name) : Collision<lattice_model>(name) {}
     bool is_fluid() const override final
     {
         return true;
@@ -50,7 +77,8 @@ class NonFluidCollision: public Collision<lattice_model>
 protected:
     Domain<lattice_model>& domain;
 public:
-    NonFluidCollision(Domain<lattice_model>& domain) : domain (domain) {}
+    NonFluidCollision(const CollisionType& name, Domain<lattice_model>& domain)
+    : Collision<lattice_model>(name), domain (domain) {}
 
     bool is_fluid() const override final
     {
@@ -74,6 +102,7 @@ template <typename lattice_model>
 class NullCollision : public Collision<lattice_model>
 {
 public:
+    NullCollision() : Collision<lattice_model>(CollisionType::null) {}
     bool is_fluid() const override final
     {
         return false;

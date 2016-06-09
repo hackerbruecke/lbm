@@ -2,12 +2,12 @@
 
 <scenario name="Cavity">
 <!--    <domain vtk-file=""> -->
-    <domain xl="40" yl="40" zl="40">
+    <domain xl="16" yl="16" zl="16">
         <boundary extent="z0" condition="noslip" />
-        <boundary extent="zmax"    condition="movingwall" vx="0.05" vy="0" vz="0" />
         <boundary extent="x0"   condition="noslip" />
         <boundary extent="xmax"  condition="noslip" />
         <boundary extent="y0"  condition="noslip" />
         <boundary extent="ymax"   condition="noslip" />
+        <boundary extent="zmax"    condition="movingwall" vx="0.05" vy="0" vz="0" />
     </domain>
 </scenario>

@@ -7,6 +7,8 @@
 *.o
 *.d
 lbm_isotropy
+isotropy_mpi
+isotropy_seq
 *.vtk
 !pipe.vtk
 *.vts

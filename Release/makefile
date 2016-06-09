@@ -37,19 +37,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: lbm_isotropy
+all: isotropy_mpi
 
 # Tool invocations
-lbm_isotropy: $(OBJS) $(USER_OBJS)
+isotropy_mpi: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	mpic++ -L../lib -fopenmp -o "lbm_isotropy" $(OBJS) $(USER_OBJS) $(LIBS)
+	mpic++ -L../lib -fopenmp -o "isotropy_mpi" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) lbm_isotropy
+	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) isotropy_mpi
 	-@echo ' '
 
 .PHONY: all clean dependents

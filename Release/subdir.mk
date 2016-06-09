@@ -17,7 +17,7 @@ CPP_DEPS += \
 %.o: ../%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	mpic++ -std=c++11 -I/usr/include/vtk-5.8 -I/usr/include/mpich -I../include -O3 -funroll-loops -ftree-vectorize -pedantic -Wall -c -fmessage-length=0 -Wno-deprecated -fopenmp -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	mpic++ -std=c++11 -I/usr/include/vtk-5.8 -I/usr/include/mpi -I../include -O3 -funroll-loops -ftree-vectorize -pedantic -Wall -c -fmessage-length=0 -Wno-deprecated -fopenmp -Wno-literal-suffix -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
