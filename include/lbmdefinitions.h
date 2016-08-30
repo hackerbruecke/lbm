@@ -2,7 +2,6 @@
 #include <array>
 #include <vector>
 #include <memory>
-#include <cstdint>
 
 namespace lbm
 {

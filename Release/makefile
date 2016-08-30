@@ -43,7 +43,7 @@ all: lbm_isotropy
 lbm_isotropy: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	mpic++ -L../lib/vtk-5.10 -L../lib -L/home1/03822/malchera/boost/boost_1_55_0/libs/lib -fopenmp -o "lbm_isotropy" $(OBJS) $(USER_OBJS) $(LIBS)
+	mpic++ -L../lib -fopenmp -o "lbm_isotropy" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

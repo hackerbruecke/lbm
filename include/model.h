@@ -33,12 +33,12 @@ struct d3q15
         1.0/72, 1.0/72,  8.0/72, 1.0/72, 1.0/72
     }};
 
-    static int inv(int q)
+    static const int inv(int q)
     {
         return Q-1-q;
     }
 
-    static size_t velocity_index(int u, int v, int w)
+    static const size_t velocity_index(int u, int v, int w)
     {
         return 5*w + 2*v + u + 7 - (w+2)%2 * (u+v)/2;
     }
@@ -74,12 +74,12 @@ struct d3q19
         1.0/36, 2.0/36, 1.0/36, 1.0/36
     }};
 
-    static int inv(int q)
+    static const int inv(int q)
     {
         return Q-1-q;
     }
 
-    static size_t velocity_index(int u, int v, int w)
+    static const size_t velocity_index(int u, int v, int w)
     {
         return w == 0 ? (6 + (v + 1) * 3 + u) : ((w + 1) * 7 + (v + 1) * 2 + u);
     }
@@ -121,13 +121,13 @@ struct d3q27
          4.0/216,  1.0/216
     }};
 
-    static int inv(int q)
+    static const int inv(int q)
     {
         return Q-1-q;
     }
 
     // TODO: Implement
-    static size_t velocity_index(int u, int v, int w)
+    static const size_t velocity_index(int u, int v, int w)
     {
         return 9*w + 3*v + u + 13;
     }

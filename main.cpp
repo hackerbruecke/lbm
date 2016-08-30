@@ -12,7 +12,7 @@
     #error "Set lattice model via -DD3Q=15, -DD3Q=19 or -DD3Q=27"
 #endif
 
-//#include <mpi.h>
+#include <mpi.h>
 #include <iostream>
 #include <memory>
 
