@@ -11,12 +11,12 @@ LD=g++
 # Flags/Options
 CFLAGS=-std=c++11 -O3 -funroll-loops -ftree-vectorize -Wno-deprecated
 LDFLAGS=-fopenmp #-Wl,-R -Wl,`pwd`
-LIBS=-lpugixml -lboost_mpi -lboost_program_options -lboost_filesystem -lboost_system -lvtkIO -lvtkFiltering -lvtkCommon -lvtksys -lvtkzlib
+LIBS=-lpugixml -lboost_program_options -lboost_filesystem -lboost_system -lvtkIO -lvtkFiltering -lvtkCommon -lvtksys -ldl -lvtkzlib
 
-BOOST_INC_LOCATION=$(TACC_BOOST_MPI_INCLUDE) /home1/03822/malchera/boost/boost_1_55_0/libs/include
-BOOST_LIB_LOCATION=$(TACC_BOOST_MPI_LIB) /home1/03822/malchera/boost/boost_1_55_0/libs/lib
+BOOST_INC_LOCATION=$(TACC_BOOST_INC)
+BOOST_LIB_LOCATION=$(TACC_BOOST_LIB)
 VTK_INC_LOCATION=./include/vtk-5.10
-VTK_LIB_LOCATION=./lib/vtk-5.10
+VTK_LIB_LOCATION=./lib/vtk-5.10 
 
 #######################################################
 
