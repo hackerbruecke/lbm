@@ -1,12 +1,9 @@
 # All hidden files, object files, the executable and vtk files
 .*
 !.gitignore
-!.cproject
-!.project
-!.settings
 *.o
 *.d
-lbm_isotropy
+lbm
 *.vtk
 !pipe.vtk
 *.vts
