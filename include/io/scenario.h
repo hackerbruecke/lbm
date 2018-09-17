@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pugixml/pugixml.hpp"
+#include <pugixml.hpp>
 #include "domain.h"
 #include "vtk.h"
 #include "boundary.h"
