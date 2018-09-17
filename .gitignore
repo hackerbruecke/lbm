@@ -9,3 +9,5 @@ lbm
 *.vts
 *.pvts
 gmon.out
+cmake-build-debug
+cmake-build-release
