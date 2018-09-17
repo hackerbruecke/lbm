@@ -86,7 +86,7 @@ template <typename lattice_model>
 template <typename collision, typename... Args>
 auto BoundaryKeeper<lattice_model>::get_collision(Args&& ...args) -> NonFluidCollision<lattice_model>&
 {
-    boundary_conditions.push_back(make_unique<collision>(args...));
+    boundary_conditions.push_back(std::make_unique<collision>(args...));
     return *boundary_conditions.back();
 }
 

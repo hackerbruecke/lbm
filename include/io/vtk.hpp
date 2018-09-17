@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vtkSmartPointer.h>
+
+
 namespace lbm
 {
 namespace io
@@ -81,7 +84,7 @@ void write_vtk_file(const Domain<lattice_model>& domain, const std::string& outp
     // Write file
     auto writer = vtkSmartPointer<vtkXMLStructuredGridWriter>::New();
     writer->SetFileName(sstr.str().c_str());
-    writer->SetInput(structuredGrid);
+    writer->SetInputData(structuredGrid);
     writer->Write();
 }
 
