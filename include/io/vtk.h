@@ -27,23 +27,22 @@
 
 #pragma GCC diagnostic pop
 
-namespace lbm
-{
-namespace io
-{
+namespace lbm {
+namespace io {
 
 template<typename lattice_model>
 void write_vtk_file(const Domain<lattice_model>& domain, const std::string& output_dir,
-        const std::string& output_filename, uint64_t t);
+                    const std::string& output_filename, uint64_t t);
 
 template<typename lattice_model, typename solid_collision_model>
 auto read_vtk_point_file(const std::string& filename,
-        FluidCollision<lattice_model>& fluid_collision_model) -> Domain_ptr<lattice_model>;
+                         FluidCollision<lattice_model>& fluid_collision_model) -> Domain_ptr<lattice_model>;
 
 } //namespace io
 } //namespace lbm
 
 #if defined (LEGACY_WRITER)
-    #include "vtk_legacy.hpp"
+#include "vtk_legacy.hpp"
 #endif
-    #include "vtk.hpp"
+
+#include "vtk.hpp"

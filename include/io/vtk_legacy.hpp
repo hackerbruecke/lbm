@@ -86,7 +86,7 @@ void write_vtk_file(const Domain<lattice_model>& domain, const std::string& outp
     /* Compute (macroscopic) velocities for all cells */
     std::vector<double> density(xl*yl*zl);
     auto index = 0u;
-    #pragma omp for collapse(3)
+#pragma omp for collapse(3)
     for (auto z = 1u; z < zl + 1; ++z) {
         for (auto y = 1u; y < yl + 1; ++y) {
             for (auto x = 1u; x < xl + 1; ++x) {
