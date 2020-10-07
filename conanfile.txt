@@ -1,0 +1,14 @@
+[requires]
+pugixml/1.10
+vtk/8.2.0
+boost/1.73.0
+
+[options]
+vtk:shared=True
+boost:shared=True
+
+[imports]
+lib, *.so* -> lib
+
+[generators]
+cmake

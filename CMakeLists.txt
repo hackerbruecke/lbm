@@ -1,41 +1,41 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 project(lbm)
 
-
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/lib64/cmake/vtk)
 
-find_package(VTK REQUIRED)
-find_package(pugixml REQUIRED)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(KEEP_RPATHS NO_OUTPUT_DIRS)
 
 include_directories(include)
 include_directories(include/io)
 
-include(${VTK_USE_FILE})
+#include(${VTK_USE_FILE})
+set(HEADERS
+  include/io/configuration.h
+  include/io/scenario.h
+  include/io/vtk.h
+  include/io/vtk.hpp
+  include/io/vtk_legacy.hpp
+  include/boundary.h
+  include/boundary.hpp
+  include/cell.h
+  include/cell.hpp
+  include/collision.h
+  include/collision.hpp
+  include/domain.h
+  include/domain.hpp
+  include/helper.h
+  include/lbmdefinitions.h
+  include/model.h
+  include/parallel.h
+)
 
-add_executable(lbm
-        include/io/configuration.h
-        include/io/scenario.h
-        include/io/vtk.h
-        include/io/vtk.hpp
-        include/io/vtk_legacy.hpp
-        #include/pugixml/pugiconfig.hpp
-        #include/pugixml/pugixml.hpp
-        include/boundary.h
-        include/boundary.hpp
-        include/cell.h
-        include/cell.hpp
-        include/collision.h
-        include/collision.hpp
-        include/domain.h
-        include/domain.hpp
-        include/helper.h
-        include/lbmdefinitions.h
-        include/model.h
-        include/parallel.h
-        src/main.cpp)
+set(SOURCES
+  src/main.cpp
+)
 
+add_executable(lbm ${HEADERS} ${SOURCES})
 
 target_compile_options(lbm PUBLIC -fopenmp)
-target_link_libraries(lbm pugixml boost_program_options boost_filesystem boost_system ${VTK_LIBRARIES})
-target_link_libraries(lbm -fopenmp)
+target_link_libraries(lbm PRIVATE ${CONAN_LIBS})
+target_link_libraries(lbm PRIVATE -fopenmp ${CMAKE_DL_LIBS})
